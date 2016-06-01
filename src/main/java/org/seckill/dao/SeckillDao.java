@@ -39,4 +39,11 @@ public interface SeckillDao
     List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
 
 
+    /**
+     * 更新秒杀时间区间
+     * @return
+     */
+//    int updateSekillTime(@Param("seckillId") long seckillId, @Param("startTime") Date startTime, @Param("endTime")
+//                         Date endTime);
+
 }

@@ -13,6 +13,9 @@ import org.seckill.exception.SeckillException;
 import org.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
@@ -21,33 +24,40 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/5/31.
  */
+@Service
 public class SeckillServiceImpl implements SeckillService
 {
 
     private Logger logger = LoggerFactory.getLogger(SeckillServiceImpl.class);
 
+    @Autowired
     private SeckillDao seckillDao;
 
+    @Autowired
     private SuccessKilledDao successKilledDao;
 
     //盐值，混淆MD5
     private final String SLAT = "xiehaifan";
+
 
     public List<Seckill> getSeckillList()
     {
         return seckillDao.queryAll(0, 4);
     }
 
+
     public Seckill getById(long seckillId)
     {
         return seckillDao.queryById(seckillId);
     }
+
 
     public Exposer exportSeckillUrl(long seckillId)
     {
         Seckill seckill = seckillDao.queryById(seckillId);
         if (seckill == null)
         {
+            logger.error("id {} is not exist.", seckillId );
             return new Exposer(seckillId, false);
         }
 
@@ -56,6 +66,7 @@ public class SeckillServiceImpl implements SeckillService
         Date nowTime = new Date();
         if (nowTime.getTime() < startTime.getTime() || nowTime.getTime() > endTime.getTime())
         {
+            logger.error("now {} is not between time.", nowTime );
             return new Exposer(seckillId, false, nowTime.getTime(), startTime.getTime(), endTime.getTime());
         }
         String md5 = getMd5(seckillId);
@@ -69,6 +80,14 @@ public class SeckillServiceImpl implements SeckillService
         return md5;
     }
 
+
+    @Transactional
+    /**
+     * 使用注解控制事物管理方法的有点：
+     * 1、开发团队达成一致约定，明确标注事物方法的编程风格
+     * 2、保证事物方法的执行时间尽可能短,不要穿插其他的网络操作，RPC、HTTP请求
+     * 3、不是所有方法都需要事物，如只有一条修改操作（只读操作，有2条需要修改数据的操作才需要事物管理）
+     */
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException
     {
         if (md5 == null || !md5.equals(getMd5(seckillId)))
@@ -111,4 +130,9 @@ public class SeckillServiceImpl implements SeckillService
             throw new SeckillException("seckill inner error:" + e.getMessage());
         }
     }
+
+//    public int updateSeckillTime(Seckill seckill)
+//    {
+//        return seckillDao.updateSekillTime(seckill.getSeckillId(),seckill.getStartTime(),seckill.getEndTime());
+//    }
 }

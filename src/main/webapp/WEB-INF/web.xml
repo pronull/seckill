@@ -5,4 +5,19 @@
          version="3.0"
          metadata-complete="true">
   <display-name>Archetype Created Web Application</display-name>
+
+  <!--修改servlet 版本 3.0-->
+  <servlet>
+    <servlet-name>seckill-dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/spring-*.xml</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>seckill-dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
 </web-app>
