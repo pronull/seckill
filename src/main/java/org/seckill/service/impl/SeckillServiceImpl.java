@@ -106,6 +106,7 @@ public class SeckillServiceImpl implements SeckillService
             } else
             {
                 int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+                logger.info("insert counter = {}", insertCount);
                 if (insertCount <= 0)
                 {
                     throw new RepeatKillException("seckill repeated");
