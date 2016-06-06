@@ -49,7 +49,7 @@ public class SeckillServiceImplTest
     @Test
     public void testSeckillLogic() throws Exception
     {
-        long id = 1001L;
+        long id = 1000L;
         //23:36:44.673 [main] INFO  o.s.s.impl.SeckillServiceImplTest - exposer = Exposer{exposed=true, md5='8a08c20c8384d527cc1b2434016aa58c', seckillId=1000, now=0, start=0, end=0}
         Exposer exposer = seckillService.exportSeckillUrl(id);
 
