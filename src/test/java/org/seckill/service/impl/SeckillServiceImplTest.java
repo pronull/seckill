@@ -27,6 +27,21 @@ import static org.junit.Assert.*;
 @ContextConfiguration({"classpath:spring/spring-dao.xml", "classpath:spring/spring-service.xml"})
 public class SeckillServiceImplTest
 {
+
+    @Test
+    public void executeSeckillProcedure() throws Exception
+    {
+        long seckillId = 1001;
+        long phone = 13823232321L;
+        Exposer exposer = seckillService.exportSeckillUrl(seckillId);
+        if(exposer.isExposed())
+        {
+            String md5 = exposer.getMd5();
+            SeckillExecution seckillExecution = seckillService.executeSeckillProcedure(seckillId, phone, md5);
+            logger.info(seckillExecution.getStateInfo());
+        }
+    }
+
     private final Logger logger = LoggerFactory.getLogger(SeckillServiceImplTest.class);
 
     @Autowired
@@ -80,10 +95,7 @@ public class SeckillServiceImplTest
         }
     }
 
-    @Test
-    public void executeSeckill() throws Exception
-    {
-    }
+
 
 //    @Test
 //    public void updateSeckillTime()
